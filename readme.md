@@ -8,6 +8,12 @@ Place whatever child components you'd like inside the `redux-master` component
   <table-of-data id="table"></table-of-data>
 </redux-master>
 ```
+Add a reducer
+```js
+reduxMaster.addReducer(function (store, action, self) {
+  return { headings: action.headings, rows: action.rows };
+}, 'SET_DATA');
+```
 Dispatch to the store
 ```js
 reduxMaster.store.dispatch({ type: 'SET_DATA', headings: headings, rows: rows });
