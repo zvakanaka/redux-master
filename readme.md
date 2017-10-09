@@ -1,7 +1,7 @@
 [demo](https://zvakanaka.github.io/redux-web-component)  
 Use Redux to manage web components
 # Usage
-Place whatever child components you'd like inside the `redux-master` component.
+Place whatever child components you'd like inside the `redux-master` component
 ```html
 <redux-master src="./data.json">
   <view-json no-scroll id="json"></view-json>
