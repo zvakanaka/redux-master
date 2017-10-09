@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Data</title>
+    <link rel="import" href="https://zvakanaka.github.io/table-of-data/table-of-data.html">
+    <link rel="import" href="https://zvakanaka.github.io/view-json/view-json.html">
+    <script src="https://npmcdn.com/redux@3.6.0/dist/redux.min.js"></script>
+    <script src="redux-master.js"></script>
+    <style media="screen">
+      :root { font-family: monospace; }
+    </style>
+  </head>
+  <body>
+    <!-- data from https://gist.github.com/cvan -->
+    <redux-master src="https://gist.githubusercontent.com/cvan/63fd19c0458ca5c691e984c65585f71e/raw/de3f17d070605d3352b3510f71c77b450c41b06b/pwas.json">
+      <view-json no-scroll id="json"></view-json>
+      <table-of-data id="table"></table-of-data>
+    </redux-master>
+
+    <script type="text/javascript">
+    let reduxMaster = document.querySelector('redux-master');
+
+    reduxMaster.addReducer(function (store, action, self) {
+      return { headings: action.headings, rows: action.rows };
+    }, 'SET_DATA');
+
+    fetch(reduxMaster.getAttribute('src'), {method: 'GET'})
+      .then(res => res.json())
+      .then(data => {
+        let headings = Object.keys(data[0]);
+        let rows = data.map(row => Object.values(row));
+        reduxMaster.store.dispatch({ type: 'SET_DATA', headings: headings, rows: rows });
+        reduxMaster.addView((s) => { // subscribe to whenever a reducer is called
+          reduxMaster.children.table.data = { headings: s.headings, rows: s.rows };
+        });
+        reduxMaster.addView((s) => { // subscribe to whenever a reducer is called
+          reduxMaster.children.json.innerHTML = JSON.stringify(s.headings);
+        });
+      });
+    </script>
+  </body>
+</html>
