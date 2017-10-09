@@ -1,4 +1,4 @@
-[demo](https://zvakanaka.github.io/redux-web-component)  
+[demo](https://zvakanaka.github.io/redux-master)  
 Use Redux to manage web components
 # Usage
 Place whatever child components you'd like inside the `redux-master` component
