@@ -2,8 +2,8 @@
   <head>
     <meta charset="utf-8">
     <title>Data</title>
-    <link rel="import" href="https://zvakanaka.github.io/table-of-data/table-of-data.html">
-    <link rel="import" href="https://zvakanaka.github.io/view-json/view-json.html">
+    <script src="https://zvakanaka.github.io/table-of-data/table-of-data.js"></script>
+    <script src="https://zvakanaka.github.io/view-json/view-json.js"></script>
     <script src="https://npmcdn.com/redux@3.6.0/dist/redux.min.js"></script>
     <script src="redux-master.js"></script>
     <style media="screen"> :root { font-family: monospace; } </style>
@@ -25,7 +25,8 @@
     <script type="text/javascript">
     let reduxMaster = document.querySelector('redux-master');
 
-    reduxMaster.addReducer(function (store, action, self) {
+    reduxMaster.addReducer(function (store, action) { // called whenever 'SET_DATA' is dispatched
+      // attempt to dynamically get headings + rows out of a variety object structures
       let headings;
       let rows;
       if (typeof action.data === 'string') {
@@ -39,34 +40,33 @@
       return { headings: headings, rows: rows, data: action.data, prepend: isPrependChecked };
     }, 'SET_DATA');
 
-    reduxMaster.addReducer(function (store, action, self) {
-      return { headings: store.headings, rows: store.rows, data: store.data, prepend: action.prepend };
-    }, 'SET_PREPEND');
-
     reduxMaster.addView((store) => { // subscribe to whenever a reducer is called
+      // puts the last json response in the json viewer component
       reduxMaster.children.json.innerHTML = JSON.stringify(store.data);
     });
 
     reduxMaster.addView((store) => { // subscribe to whenever a reducer is called
-      if (!store.prepend || Object.keys(reduxMaster.children.table.data).length === 0) {
+      // this view takes data from the store and puts it into the table component
+      console.log();
+      if (!store.prepend || !reduxMaster.children.table.data.hasOwnProperty('rows')) { // don't prepend
         reduxMaster.children.table.data = { headings: store.headings, rows: store.rows };
-      } else {//prepend
+      } else { // prepend
         reduxMaster.children.table.data = { headings: store.headings, rows: [...store.rows, ...reduxMaster.children.table.data.rows] };
       }
     });
 
-    function fetchDataAndSetTable(url) {
-      fetch(url, { method: 'GET' })
+    function fetchDataThenDispatch(url) {
+      fetch(url, { method: 'GET', mode: 'cors'})
       .then(res => res.json())
       .then(data => {
         reduxMaster.store.dispatch({ type: 'SET_DATA', data: data });
       });
     }
 
-    fetchDataAndSetTable(reduxMaster.getAttribute('src'));
+    fetchDataThenDispatch(reduxMaster.getAttribute('src'));// get initial data
 
     reduxMaster.children.button.addEventListener('click', function () {
-      fetchDataAndSetTable(reduxMaster.children.input.value);
+      fetchDataThenDispatch(reduxMaster.children.input.value);
     });
     </script>
   </body>
