@@ -1,6 +1,6 @@
 /*
  * This is a proxy component that uses a redux-master component to manage contents
- * The contents of this components are contained in its shadow DOM
+ * The contents of this component are contained in the shadow DOM of this component
  */
 (function() {
   'use strict';
