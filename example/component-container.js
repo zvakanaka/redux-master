@@ -19,7 +19,7 @@
           <label for="checkbox">Prepend to Table</label>
           <input type="checkbox" id="checkbox" checked="true">
           <h2>Response</h2>
-          <view-json id="json">"Loading: ${this.getAttribute('src')}" </view-json>
+          <view-json id="json">"Loading: ${this.getAttribute('src')}"</view-json>
           <h2>Table</h2>
           <table-of-data id="table"></table-of-data>
         </redux-master>
