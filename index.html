@@ -5,23 +5,28 @@
     <script src="https://zvakanaka.github.io/table-of-data/table-of-data.js"></script>
     <script src="https://zvakanaka.github.io/view-json/view-json.js"></script>
     <script src="https://npmcdn.com/redux@3.6.0/dist/redux.min.js"></script>
-    <script src="redux-master.js"></script>
-    <style media="screen"> :root { font-family: monospace; } </style>
+    <script src="./redux-master.js"></script>
+    <style media="screen"> :root { font-family: monospace; } .border { border-style: solid; padding: 1em; }</style>
   </head>
   <body>
-    <redux-master src="https://inspiration-api.herokuapp.com/quote">
-      <h2>Data</h2>
-      <label for="input">JSON URL:</label>
-      <input type="text" id="input" value="https://inspiration-api.herokuapp.com/quote">
-      <button type="button" id="button">Get data</button>
-      <label for="checkbox">Prepend to Table</label>
-      <input type="checkbox" id="checkbox" checked="true">
-      <h2>Response</h2>
-      <view-json no-scroll id="json">null</view-json>
-      <h2>Table</h2>
-      <table-of-data id="table"></table-of-data>
-    </redux-master>
-
+    <h1>redux-master Component</h1>
+    <p>The following is a <a href="https://github.com/zvakanaka/redux-master/blob/master/redux-master.js">redux-master</a> component with some children. The redux-master component is generic, meaning it leaves management of children up to the user. See <a href="https://github.com/zvakanaka/redux-master/blob/master/index.html">this page's source code</a> to see how to use it.</p>
+    <p>Also, check out the <a href="https://github.com/zvakanaka/redux-master/blob/master/example/component-container.js">component-container proxy</a> and it's implementation page (<a href="./example/">demo</a>, <a href="https://github.com/zvakanaka/redux-master/blob/master/example/index.html">source</a>) to see what the redux-master looks like when wrapped in a proxy component with shadow DOM.</p>
+    <div class="border">
+      <redux-master src="https://inspiration-api.herokuapp.com/quote">
+        <h2>Data</h2>
+        <label for="input">JSON URL:</label>
+        <input type="text" id="input" value="https://inspiration-api.herokuapp.com/quote">
+        <button type="button" id="button">Get data</button>
+        <label for="checkbox">Prepend to Table</label>
+        <input type="checkbox" id="checkbox" checked="true">
+        <h2>Response</h2>
+        <view-json id="json">null</view-json>
+        <h2>Table</h2>
+        <table-of-data id="table"></table-of-data>
+      </redux-master>
+    </div>
+    <a href="https://github.com/zvakanaka/redux-master/blob/master/index.html">this page's source code</a>
     <script type="text/javascript">
     let reduxMaster = document.querySelector('redux-master');
 
@@ -47,7 +52,6 @@
 
     reduxMaster.addView((store) => { // subscribe to whenever a reducer is called
       // this view takes data from the store and puts it into the table component
-      console.log();
       if (!store.prepend || !reduxMaster.children.table.data.hasOwnProperty('rows')) { // don't prepend
         reduxMaster.children.table.data = { headings: store.headings, rows: store.rows };
       } else { // prepend

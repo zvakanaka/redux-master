@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Redux Proxy Component</title>
+    <script src="https://zvakanaka.github.io/table-of-data/table-of-data.js"></script>
+    <script src="https://zvakanaka.github.io/view-json/view-json.js"></script>
+    <script src="https://npmcdn.com/redux@3.6.0/dist/redux.min.js"></script>
+    <script src="../redux-master.js"></script>
+    <script src="./component-container.js"></script>
+    <style media="screen"> :root { font-family: monospace; } .border { border-style: solid; padding: 1em; } </style>
+  </head>
+  <body>
+    <h1>Proxy Component</h1>
+    <p>The following is contained in a proxy component (<a href="https://github.com/zvakanaka/redux-master/blob/master/example/component-container.js"><code>&lt;component-container&gt;</code></a>), which uses a <a href="https://github.com/zvakanaka/redux-master/blob/master/redux-master.js"><code>&lt;redux-master&gt;</code></a> component to manage children.</p>
+    <div class="border">
+      <component-container src="https://inspiration-api.herokuapp.com/quote"></component-container>
+    </div>
+    <a href="https://github.com/zvakanaka/redux-master/blob/master/example/index.html">this page's source code</a>
+  </body>
+</html>

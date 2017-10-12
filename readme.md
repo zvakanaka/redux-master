@@ -5,7 +5,7 @@ Use Redux to manage web components
 Place some child components inside
 ```html
 <redux-master src="https://example.com/data.json">
-  <view-json no-scroll id="json"></view-json>
+  <view-json id="json"></view-json>
   <table-of-data id="table"></table-of-data>
 </redux-master>
 ```
