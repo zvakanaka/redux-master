@@ -6,14 +6,19 @@
     <link rel="import" href="https://zvakanaka.github.io/view-json/view-json.html">
     <script src="https://npmcdn.com/redux@3.6.0/dist/redux.min.js"></script>
     <script src="redux-master.js"></script>
-    <style media="screen">
-      :root { font-family: monospace; }
-    </style>
+    <style media="screen"> :root { font-family: monospace; } </style>
   </head>
   <body>
-    <!-- data from https://gist.github.com/cvan -->
-    <redux-master src="https://gist.githubusercontent.com/cvan/63fd19c0458ca5c691e984c65585f71e/raw/de3f17d070605d3352b3510f71c77b450c41b06b/pwas.json">
-      <view-json no-scroll id="json"></view-json>
+    <redux-master src="http://inspiration-api.herokuapp.com/quote">
+      <h2>Data</h2>
+      <label for="input">JSON URL:</label>
+      <input type="text" id="input" value="http://inspiration-api.herokuapp.com/quote">
+      <button type="button" id="button">Get data</button>
+      <label for="checkbox">Prepend to Table</label>
+      <input type="checkbox" id="checkbox" checked="true">
+      <h2>Response</h2>
+      <view-json no-scroll id="json">null</view-json>
+      <h2>Table</h2>
       <table-of-data id="table"></table-of-data>
     </redux-master>
 
@@ -21,22 +26,48 @@
     let reduxMaster = document.querySelector('redux-master');
 
     reduxMaster.addReducer(function (store, action, self) {
-      return { headings: action.headings, rows: action.rows };
+      let headings;
+      let rows;
+      if (typeof action.data === 'string') {
+        headings = [''];
+        rows = [[action.data]];
+      } else {
+        headings = (typeof action.data.length === 'undefined') ? Object.keys(action.data) : Object.keys(action.data[0]);
+        rows = (typeof action.data.length === 'undefined') ? [Object.values(action.data)] : action.data.map(row => Object.values(row));
+      }
+      let isPrependChecked = reduxMaster.children.checkbox.checked;
+      return { headings: headings, rows: rows, data: action.data, prepend: isPrependChecked };
     }, 'SET_DATA');
 
-    fetch(reduxMaster.getAttribute('src'), {method: 'GET'})
+    reduxMaster.addReducer(function (store, action, self) {
+      return { headings: store.headings, rows: store.rows, data: store.data, prepend: action.prepend };
+    }, 'SET_PREPEND');
+
+    reduxMaster.addView((store) => { // subscribe to whenever a reducer is called
+      reduxMaster.children.json.innerHTML = JSON.stringify(store.data);
+    });
+
+    reduxMaster.addView((store) => { // subscribe to whenever a reducer is called
+      if (!store.prepend || Object.keys(reduxMaster.children.table.data).length === 0) {
+        reduxMaster.children.table.data = { headings: store.headings, rows: store.rows };
+      } else {//prepend
+        reduxMaster.children.table.data = { headings: store.headings, rows: [...store.rows, ...reduxMaster.children.table.data.rows] };
+      }
+    });
+
+    function fetchDataAndSetTable(url) {
+      fetch(url, { method: 'GET' })
       .then(res => res.json())
       .then(data => {
-        let headings = Object.keys(data[0]);
-        let rows = data.map(row => Object.values(row));
-        reduxMaster.store.dispatch({ type: 'SET_DATA', headings: headings, rows: rows });
-        reduxMaster.addView((s) => { // subscribe to whenever a reducer is called
-          reduxMaster.children.table.data = { headings: s.headings, rows: s.rows };
-        });
-        reduxMaster.addView((s) => { // subscribe to whenever a reducer is called
-          reduxMaster.children.json.innerHTML = JSON.stringify(s.headings);
-        });
+        reduxMaster.store.dispatch({ type: 'SET_DATA', data: data });
       });
+    }
+
+    fetchDataAndSetTable(reduxMaster.getAttribute('src'));
+
+    reduxMaster.children.button.addEventListener('click', function () {
+      fetchDataAndSetTable(reduxMaster.children.input.value);
+    });
     </script>
   </body>
 </html>
