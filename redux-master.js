@@ -9,11 +9,9 @@
         let newState = null;
         reducers.forEach(function(r) {
           if (action.type === r.action) {
-            console.log('REDUCING!!!', r.action, 'action', action);
-            newState = r.func(state, action, self);
+            newState = r.func(state, action, self);//reduce!
           }
         });
-        console.log(newState);
         return (newState || state);
       }
       this.reducers = reducers;
@@ -24,13 +22,13 @@
           //TODO: wait until these are all done and fire event 'allDefined'
         });
       });
-    } //event listeners
+    }
     addReducer(func, action) {
       let reducer = { action: action, func: func };
       this.reducers.push(reducer);
     }
-    addView(func) { //these get called after reducer
-      func(this.store.getState());
+    addView(func, immediate=false) { //these get called after reducer
+      if (immediate) func(this.store.getState());//call function at addView time
       this.store.subscribe(() => {
         func(this.store.getState());
       });
