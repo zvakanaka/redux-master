@@ -16,12 +16,6 @@
       this.reducers = reducers;
       /* global Redux */
       this.store = Redux.createStore(reducer.bind(this), defaultState, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
-      Array.from(this.children).filter(child => child.localName.indexOf('-') > -1)
-        .forEach(function (child) {
-          customElements.whenDefined(child.localName).then(() => {
-            //TODO: wait until these are all done and fire event 'allDefined'
-          });
-        });
     }
     addReducer(func, action) {
       let reducer = { action: action, func: func };
@@ -29,9 +23,7 @@
     }
     addView(func, immediate=false) { //these get called after reducer
       if (immediate) func(this.store.getState());//call function at addView time
-      this.store.subscribe(() => {
-        func(this.store.getState());
-      });
+      this.store.subscribe(() => func(this.store.getState()));
     }
   });
 }());
